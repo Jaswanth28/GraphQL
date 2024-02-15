@@ -70,14 +70,16 @@ class Mutation:
             if auth_id:
                 existing_id=authr.find_one({"Auth_id":auth_id})
                 if existing_id==None and author==None:
-                    return "Enter new author name"
+                    return None
                 else:
                     new_book={"Book":book,"Auth_id":auth_id}
                     lib.insert_one(new_book)
                     if existing_id==None and author!=None:
                         new_author={"Auth_id":auth_id,"Author":author}
                         authr.insert_one(new_author)
-                    nb={"Book":book,"Auth_id":auth_id,"Author":author}
+                        nb={"Book":book,"Auth_id":auth_id,"Author":author}
+                        return books(**nb)
+                    nb={"Book":book,"Auth_id":auth_id,"Author":existing_id["Author"]}
                     return books(**nb)
     @strawberry.mutation
     def write_review(self,book:str,reviews:str)->str:
