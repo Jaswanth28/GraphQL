@@ -59,7 +59,6 @@ class Query:
         ress=authr.find(query)
         return [auths(Author=outs["Author"],Auth_id=outs["Auth_id"]) for outs in ress]
 
-
 @strawberry.type
 class Mutation:
     @strawberry.mutation
