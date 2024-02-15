@@ -63,10 +63,10 @@ class Query:
 @strawberry.type
 class Mutation:
     @strawberry.mutation
-    def add_book(self,book:str,auth_id:int,author:Optional[str]=None)->str:
+    def add_book(self,book:str,auth_id:int,author:Optional[str]=None)->Optional[books]:
         existing_book = lib.find_one({"Book": book})
         if existing_book:
-            return "Book already exists"
+            return None
         else:
             if auth_id:
                 existing_id=authr.find_one({"Auth_id":auth_id})
@@ -78,9 +78,10 @@ class Mutation:
                     if existing_id==None and author!=None:
                         new_author={"Auth_id":auth_id,"Author":author}
                         authr.insert_one(new_author)
-                    return "Book Added"
+                    nb={"Book":book,"Auth_id":auth_id,"Author":author}
+                    return books(**nb)
     @strawberry.mutation
-    def add_review(self,book:str,reviews:str)->str:
+    def write_review(self,book:str,reviews:str)->str:
         new_review={"Book":book,"Reviews":reviews}
         rev.insert_one(new_review)
         return "Review Added"
